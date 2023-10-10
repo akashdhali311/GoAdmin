@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FormTable;
 use Illuminate\Http\Request;
-use PHPUnit\TextUI\Configuration\File;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\FormTableRequest;
 use Illuminate\Support\Facades\Storage;
 
