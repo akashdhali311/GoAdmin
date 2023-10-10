@@ -32,39 +32,29 @@ class FormTableController extends Controller
     public function store(FormTableRequest $request)
     {
         //   dd($request->all());
-
-
         $request->validate([
             'title'=>'required',
             'subtitle'=>'required',
             'link'=>'required',
             'description'=>'required',
-            'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-
-
-        ]);
-        $imageName = time().'.'.$request->image->extension();
-        $request->image->move(storage_path('app/public/photos'),$imageName);
-
-        $formtable = new FormTable;
-        $formtable->title = $request->title;
-        $formtable->subtitle = $request->subtitle;
-        $formtable->link = $request->link;
-        $formtable->description = $request->description;
-        $formtable->image = $imageName;
-        $formtable->save();
-
-
+            'image'=>'image|mimes:jpeg,png,webp,jpg,gif,svg|max:2048',
+        ]);  
+        // $path="";
+        // if($request->hasFile('image')){
+        //     $path = $request->file('image')->store('app/public/photos');
+        // }
+        $imageName = "";
+        if($request->image){
+            $imageName = time().'.'.$request->image->getClientOriginalName();
+        $request->image->move(storage_path('app/public/category/subcategory/'),$imageName);
+        }
         
-        // $requestData =$request->all();
-        // $imageName =time().$request->file('image')->getClientOriginalName();
-        // $path =$request->file('image')->storeAs('images' , $imageName ,'public');     
-        // $requestData["image"] = $path;
-        //  $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description,'image'=>$imageName];
+        
+        $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description,'image'=>$imageName];
 
-        //  FormTable::create($requestData);
+        FormTable::create($requestData);
 
-         return redirect('/forms/general')->with('SUCCESS_MASSAGE',' Created sucessfully!');
+        return redirect('/forms/general')->with('SUCCESS_MASSAGE',' Created sucessfully!');
     }
 
     /**
@@ -92,11 +82,7 @@ class FormTableController extends Controller
     {
         $formTables = FormTable::where('id',$id)->first();
 
-        $formTables->title = $request->title;
-        $formTables->subtitle = $request->subtitle;
-        $formTables->link = $request->link;
-        $formTables->description = $request->description;
-        $formTables->image = $request->image;
+        $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description,'image'=>$imageName];
 
         $formTables->save();
 
@@ -112,7 +98,16 @@ class FormTableController extends Controller
     {
         $formTable = FormTable::where('id',$id)->first();
 
+        $imageName = storage_path('app/public/category/subcategory/'.$formTable->image);
+
+        if(file_exists($imageName))
+        {
+            unlink($imageName);
+            
+        }
         $formTable->delete();
+       
+        
 
         return redirect('/forms/general');
     }

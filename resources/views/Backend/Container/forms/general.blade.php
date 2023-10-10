@@ -147,7 +147,7 @@
                       <td>{{ $formTable->description }}</td>
                      
                       <td>
-                        <img src="{{asset('storage/photos/'.$formTable->image )}}" width="50" height="50" class="img img-responsive" alt="">
+                        <img src="{{asset('storage/category/subcategory/'.$formTable->image )}}" width="50" height="50" class="img img-responsive" alt="">
                         
                         
                       </td>
