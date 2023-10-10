@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FormTable;
 use Illuminate\Http\Request;
+use PHPUnit\TextUI\Configuration\File;
 use App\Http\Requests\FormTableRequest;
 use Illuminate\Support\Facades\Storage;
 
@@ -82,6 +83,20 @@ class FormTableController extends Controller
     {
         $formTables = FormTable::where('id',$id)->first();
 
+        
+        if($request->image){
+            
+            $imageName = storage_path('app/public/category/subcategory/'.$formTables->image);
+            if(is_file($imageName))
+        {
+            File::delete($imageName);           
+        }
+        }
+        $imageName = time().'.'.$request->image->getClientOriginalName();
+        $request->image->move(storage_path('app/public/category/subcategory/'),$imageName);
+        $formTables->image=$imageName;
+        $formTables->update();
+
         $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description,'image'=>$imageName];
 
         $formTables->save();
@@ -89,8 +104,6 @@ class FormTableController extends Controller
         return redirect('/forms/general');
 
     }
-   
-
     /**
      * Remove the specified resource from storage.
      */
@@ -102,13 +115,9 @@ class FormTableController extends Controller
 
         if(file_exists($imageName))
         {
-            unlink($imageName);
-            
+            unlink($imageName);            
         }
         $formTable->delete();
-       
-        
-
         return redirect('/forms/general');
     }
 }
