@@ -113,7 +113,7 @@ class FormTableController extends Controller
 
         $imageName = storage_path('app/public/category/subcategory/'.$formTable->image);
 
-        if(file_exists($imageName))
+        if(is_file($imageName))
         {
             unlink($imageName);            
         }
