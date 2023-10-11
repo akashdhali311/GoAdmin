@@ -83,7 +83,7 @@ class FormTableController extends Controller
     {
         $formTables = FormTable::where('id',$id)->first();
 
-        
+        $imageName = "";
         if($request->image){
             
             $imageName = storage_path('app/public/category/subcategory/'.$formTables->image);
@@ -91,15 +91,14 @@ class FormTableController extends Controller
         {
             File::delete($imageName);           
         }
-        }
         $imageName = time().'.'.$request->image->getClientOriginalName();
         $request->image->move(storage_path('app/public/category/subcategory/'),$imageName);
         $formTables->image=$imageName;
         $formTables->update();
+        }
+        $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description];
 
-        $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description,'image'=>$imageName];
-
-        $formTables->save();
+        $formTables->update($requestData);
 
         return redirect('/forms/general');
 
