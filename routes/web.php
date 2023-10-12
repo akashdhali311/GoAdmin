@@ -57,7 +57,7 @@ Route::get('/forms/general/general-create',[FormTableController::class,'create' 
 Route::post('/forms/general',[FormTableController::class,'store' ])->name('general-table-store');
 Route::get('/forms/general/general-edit/{id}',[FormTableController::class,'edit' ])->name('edit');
 Route::put('/table/editors/general-update/{id}',[FormTableController::class,'update' ])->name('generalupdate');
-Route::get('/forms/general/general-delete/{id}',[FormTableController::class,'delete' ])->name('general-delete');
+Route::get('/forms/general/general-delete/{formTable}',[FormTableController::class,'delete' ])->name('general-delete');
 
 
 

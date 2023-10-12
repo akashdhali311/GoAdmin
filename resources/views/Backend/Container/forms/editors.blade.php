@@ -1,6 +1,6 @@
-
+{{-- 
 @extends('Backend.layouts.app')
-@section('content')
+@section('content') --}}
 <div class="wrapper">
 
   <!-- Content Wrapper. Contains page content -->
@@ -115,6 +115,6 @@
 </div>
 <!-- ./wrapper -->
 
-
-@endsection
+{{-- 
+@endsection --}}
 

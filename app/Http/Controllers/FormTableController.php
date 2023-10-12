@@ -40,22 +40,23 @@ class FormTableController extends Controller
             'description'=>'required',
             'image'=>'image|mimes:jpeg,png,webp,jpg,gif,svg|max:2048',
         ]);  
-        // $path="";
-        // if($request->hasFile('image')){
-        //     $path = $request->file('image')->store('app/public/photos');
-        // }
-        $imageName = "";
-        if($request->image){
-            $imageName = time().'.'.$request->image->getClientOriginalName();
-        $request->image->move(storage_path('app/public/category/subcategory/'),$imageName);
+        $path = "";
+        if($request->hasFile('image')){
+            $path = $request->file('image')->store('category/subcategory');
         }
-        
-        
-        $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description,'image'=>$imageName];
 
-        FormTable::create($requestData);
+        $requestData = FormTable::create([
 
-        return redirect('/forms/general')->with('SUCCESS_MASSAGE',' Created sucessfully!');
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'link' => $request->link,
+            'description' => $request->description,
+            'image' => $path,
+        ]);
+
+         return redirect('/forms/general')->with('SUCCESS_MASSAGE',' Created sucessfully!');
+
+        
     }
 
     /**
@@ -106,17 +107,18 @@ class FormTableController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete( $id)
+    public function delete(FormTable $formTable)
     {
-        $formTable = FormTable::where('id',$id)->first();
+       
+        $imageName = $formTable->image;
 
-        $imageName = storage_path('app/public/category/subcategory/'.$formTable->image);
 
-        if(is_file($imageName))
+        if(File::exists($imageName))
         {
-            unlink($imageName);            
+            File::delete($imageName);            
         }
         $formTable->delete();
+        
         return redirect('/forms/general');
     }
 }
