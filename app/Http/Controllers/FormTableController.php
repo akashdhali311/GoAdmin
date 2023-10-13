@@ -91,9 +91,7 @@ class FormTableController extends Controller
             ->store('category/subcategory');
         }
         $formTable->update();
-            return redirect('/forms/general');
-        
-
+        return redirect('/forms/general');
     }
     /**
      * Remove the specified resource from storage.
@@ -102,16 +100,13 @@ class FormTableController extends Controller
     {
         
 
-        $imageName = $formTable->image;
+         $imageName = $formTable->image;
         // dd($imageName);
-        if(File::exists($imageName))
+        if(Storage::exists($imageName))
         {
-            $delete =  Storage::delete($imageName);
-                       
+           Storage::delete($imageName);           
         }
-        if($formTable->delete()){
-            return redirect('/forms/general');
-        }
-
+        $formTable->delete();     
+        return redirect('/forms/general');
     }
 }
