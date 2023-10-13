@@ -90,9 +90,9 @@ class FormTableController extends Controller
             $formTable->image = $request->file('image')
             ->store('category/subcategory');
         }
-        if($formTable->update()){
+        $formTable->update();
             return redirect('/forms/general');
-        }
+        
 
     }
     /**
@@ -100,8 +100,10 @@ class FormTableController extends Controller
      */
     public function delete(FormTable $formTable)
     {
+        
 
         $imageName = $formTable->image;
+        // dd($imageName);
         if(File::exists($imageName))
         {
             $delete =  Storage::delete($imageName);
