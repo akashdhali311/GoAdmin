@@ -47,16 +47,15 @@ class FormTableController extends Controller
 
         $requestData = FormTable::create([
 
-            'title' => $request->title,
-            'subtitle' => $request->subtitle,
-            'link' => $request->link,
-            'description' => $request->description,
+            'title' => $request->get('title'),
+            'subtitle' => $request->get('subtitle'),
+            'link' => $request->get('link'),
+            'description' => $request->get('description'),
             'image' => $path,
         ]);
 
          return redirect('/forms/general')->with('SUCCESS_MASSAGE',' Created sucessfully!');
-
-        
+  
     }
 
     /**
@@ -80,28 +79,20 @@ class FormTableController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $formTables = FormTable::where('id',$id)->first();
+    public function update(FormTableRequest $request, FormTable $formTable)
+    {       
+        $formTable->title = $request->get('title');
+        $formTable->subtitle = $request->get('subtitle');
+        $formTable->link = $request->get('link');
+        $formTable->description = $request->get('description');
 
-        $imageName = "";
-        if($request->image){
-            
-            $imageName = storage_path('app/public/category/subcategory/'.$formTables->image);
-            if(is_file($imageName))
-        {
-            File::delete($imageName);           
+        if($request->hasFile('image')){
+            $formTable->image = $request->file('image')
+            ->store('category/subcategory');
         }
-        $imageName = time().'.'.$request->image->getClientOriginalName();
-        $request->image->move(storage_path('app/public/category/subcategory/'),$imageName);
-        $formTables->image=$imageName;
-        $formTables->update();
+        if($formTable->update()){
+            return redirect('/forms/general');
         }
-        $requestData = ['title'=>$request->title,'subtitle'=>$request->subtitle,'link'=>$request->link,'description'=>$request->description];
-
-        $formTables->update($requestData);
-
-        return redirect('/forms/general');
 
     }
     /**
@@ -109,16 +100,16 @@ class FormTableController extends Controller
      */
     public function delete(FormTable $formTable)
     {
-       
+
         $imageName = $formTable->image;
-
-
         if(File::exists($imageName))
         {
-            File::delete($imageName);            
+            $delete =  Storage::delete($imageName);
+                       
         }
-        $formTable->delete();
-        
-        return redirect('/forms/general');
+        if($formTable->delete()){
+            return redirect('/forms/general');
+        }
+
     }
 }
