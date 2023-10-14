@@ -85,13 +85,22 @@ class FormTableController extends Controller
         $formTable->subtitle = $request->get('subtitle');
         $formTable->link = $request->get('link');
         $formTable->description = $request->get('description');
+        
 
         if($request->hasFile('image')){
+            $imageName = $formTable->image;
+            if(Storage::exists($imageName))
+            {
+               Storage::delete($imageName);           
+            }
             $formTable->image = $request->file('image')
             ->store('category/subcategory');
         }
         $formTable->update();
         return redirect('/forms/general');
+           
+        // $formTable->update();
+        
     }
     /**
      * Remove the specified resource from storage.
